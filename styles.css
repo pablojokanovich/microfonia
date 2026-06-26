@@ -460,6 +460,14 @@ th {
   transform: translateY(0);
 }
 
+.footer {
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  padding: 1.1rem clamp(1rem, 4vw, 2.5rem);
+  text-align: center;
+  font-size: 0.86rem;
+}
+
 .modal[hidden] {
   display: none;
 }
