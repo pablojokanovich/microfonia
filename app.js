@@ -259,7 +259,9 @@ function renderAlerts() {
       `,
     ),
   ];
-  els.alerts.innerHTML = items.length ? items.join("") : `<div class="alert"><strong>Sin alertas</strong><div>La agenda no supera el stock disponible.</div></div>`;
+  els.alerts.innerHTML = items.length
+    ? items.join("")
+    : `<div class="alert alert--success"><strong>Sin alertas</strong><div>La agenda no supera el stock disponible.</div></div>`;
 }
 
 function renderEvents() {
