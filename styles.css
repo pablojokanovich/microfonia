@@ -337,6 +337,15 @@ th {
   color: #ff4f58;
 }
 
+.alert--success {
+  border-color: rgba(20, 184, 116, 0.72) !important;
+  background: rgba(20, 184, 116, 0.16) !important;
+}
+
+.alert--success strong {
+  color: #39d98a !important;
+}
+
 .calendar {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
