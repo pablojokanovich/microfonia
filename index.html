@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Congress Rental | Sonido</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Congress Rental</p>
+        <h1>Control de microfonia</h1>
+      </div>
+      <div class="topbar__actions">
+        <button class="button button--ghost" id="downloadTemplateBtn">Plantilla Excel</button>
+        <button class="button button--ghost" id="importBtn">Importar Excel</button>
+        <input id="importFile" type="file" accept=".xlsx,.xls" hidden />
+        <button class="button button--primary" id="exportBtn">Exportar Excel</button>
+      </div>
+    </header>
+
+    <main class="shell">
+      <section class="summary" aria-label="Resumen">
+        <article>
+          <span id="totalMics">0</span>
+          <p>Microfonos cargados</p>
+        </article>
+        <article>
+          <span id="activeEvents">0</span>
+          <p>Eventos activos</p>
+        </article>
+        <article>
+          <span id="conflictCount">0</span>
+          <p>Alertas de stock</p>
+        </article>
+      </section>
+
+      <section class="workspace">
+        <aside class="panel panel--inventory">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Inventario</p>
+              <h2>Microfonos</h2>
+            </div>
+            <button class="icon-button" id="clearInventoryBtn" title="Vaciar inventario">x</button>
+          </div>
+
+          <form class="form" id="micForm">
+            <div class="grid grid--2">
+              <label>
+                Marca
+                <input id="micBrand" required placeholder="Shure" />
+              </label>
+              <label>
+                Modelo
+                <input id="micModel" required placeholder="QLXD / SM58" />
+              </label>
+            </div>
+            <div class="grid grid--2">
+              <label>
+                Numero de serie
+                <input id="micSerial" placeholder="Opcional" />
+              </label>
+            </div>
+            <button class="button button--primary" type="submit">Agregar microfono</button>
+          </form>
+
+          <details class="bulk">
+            <summary>Carga rapida por cantidad</summary>
+            <form class="form" id="bulkForm">
+              <div class="grid grid--2">
+                <label>
+                  Cantidad
+                  <input id="bulkQuantity" type="number" min="1" value="10" />
+                </label>
+                <label>
+                  Marca
+                  <input id="bulkBrand" placeholder="Shure" />
+                </label>
+              </div>
+              <div class="grid grid--2">
+                <label>
+                  Modelo
+                  <input id="bulkModel" placeholder="SM58" />
+                </label>
+              </div>
+              <label>
+                Numero de serie base
+                <input id="bulkSerial" placeholder="Opcional: SERIE genera SERIE-001, SERIE-002..." />
+              </label>
+              <button class="button button--ghost" type="submit">Crear lote</button>
+            </form>
+          </details>
+
+          <div class="toolbar">
+            <input id="micSearch" placeholder="Buscar microfono..." />
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Marca</th>
+                  <th>Modelo</th>
+                  <th>Nro</th>
+                  <th>Serie</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="micTable"></tbody>
+            </table>
+          </div>
+        </aside>
+
+        <section class="panel panel--events">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Agenda</p>
+              <h2>Eventos y asignaciones</h2>
+            </div>
+            <div class="month-nav">
+              <button class="icon-button" id="prevMonthBtn" title="Mes anterior">&lt;</button>
+              <strong id="monthLabel"></strong>
+              <button class="icon-button" id="nextMonthBtn" title="Mes siguiente">&gt;</button>
+            </div>
+          </div>
+
+          <div class="event-layout">
+            <form class="event-form" id="eventForm">
+              <input type="hidden" id="eventId" />
+              <div class="grid grid--2">
+                <label>
+                  Nombre del evento
+                  <input id="eventName" required placeholder="Congreso medico" />
+                </label>
+                <label>
+                  Orden
+                  <input id="eventOrder" placeholder="OC-0001" />
+                </label>
+              </div>
+              <label>
+                Locacion
+                <input id="eventLocation" placeholder="Hotel / salon / ciudad" />
+              </label>
+              <div class="grid grid--2">
+                <label>
+                  Fecha de inicio
+                  <input id="eventStart" type="date" required />
+                </label>
+                <label>
+                  Fecha de fin
+                  <input id="eventEnd" type="date" required />
+                </label>
+              </div>
+              <label>
+                Tipo de microfonia necesaria
+                <input id="eventMicNeed" placeholder="Ej: 8 handheld, 2 vincha, 1 podio" />
+              </label>
+
+              <div class="assignments">
+                <div class="assignments__head">
+                  <strong>Asignar microfonos</strong>
+                  <button class="button button--ghost button--small" id="selectAvailableBtn" type="button">Ver disponibles</button>
+                </div>
+                <input id="assignmentSearch" placeholder="Filtrar para asignar..." />
+                <div class="assignment-list" id="assignmentList"></div>
+              </div>
+
+              <div class="form-actions">
+                <button class="button button--primary" type="submit">Guardar evento</button>
+                <button class="button button--ghost" id="resetEventBtn" type="button">Nuevo</button>
+              </div>
+            </form>
+
+            <div class="calendar-column">
+              <div class="alerts" id="alerts"></div>
+              <div class="calendar" id="calendar"></div>
+              <div class="event-list" id="eventList"></div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div class="modal" id="excelModal" hidden>
+      <div class="modal__backdrop" data-close-modal></div>
+      <section class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="excelModalTitle">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">Excel</p>
+            <h2 id="excelModalTitle">Elegir datos</h2>
+          </div>
+          <button class="icon-button" type="button" data-close-modal>x</button>
+        </div>
+        <div class="choice-grid">
+          <button class="choice-card" type="button" data-excel-choice="inventory">
+            <strong>Inventario</strong>
+            <span>Equipos cargados, marca, modelo, numero y serie.</span>
+          </button>
+          <button class="choice-card" type="button" data-excel-choice="calendar">
+            <strong>Calendario</strong>
+            <span>Eventos, fechas y microfonos asignados.</span>
+          </button>
+          <button class="choice-card" type="button" data-excel-choice="all">
+            <strong>Todo</strong>
+            <span>Inventario y calendario en el mismo Excel.</span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
